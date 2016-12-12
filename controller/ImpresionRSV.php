@@ -5,6 +5,7 @@
  * Copyright (C) 2014      Valentín González    valengon@hotmail.com
  * Copyright (C) 2014-2016 Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2015-2016 César Sáez Rodríguez  NATHOO@lacalidad.es
+ * Copyright (C) 2016      Rafael Salas         rsalas.match@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +20,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 require_once 'plugins/factura_detallada/fpdf17/fs_fpdf.php';
 define('FPDF_FONTPATH', 'plugins/factura_detallada/fpdf17/font/');
 
@@ -34,17 +34,24 @@ require_model('cuenta_banco_cliente.php');
 require_once 'extras/phpmailer/class.phpmailer.php';
 require_once 'extras/phpmailer/class.smtp.php';
 
-class factura_detallada extends fs_controller {
-
+/**
+ * Description of ImpresionRSV
+ *
+ * @author xxx
+ */
+class ImpresionRSV extends fs_controller
+{
    public $cliente;
    public $factura;
    public $impresion;
-
-   public function __construct() {
-      parent::__construct(__CLASS__, 'Factura Detallada2', 'ventas', FALSE, FALSE);
+   
+   public function __construct()
+   {
+      parent::__construct(__CLASS__, 'ImpresionRSV', 'ventas', FALSE, FALSE);
    }
-
-   protected function private_core() {
+   
+   protected function private_core()
+   {
       $this->share_extensions();
       
       /// obtenemos los datos de configuración de impresión
@@ -76,9 +83,40 @@ class factura_detallada extends fs_controller {
       } else {
          $this->new_error_msg("¡Factura de cliente no encontrada!");
       }
-   }
 
-   // Corregir el Bug de fpdf con el Simbolo del Euro ---> €
+   }
+   
+   /**
+    * share_extensions
+    */
+   private function share_extensions() {
+      $extensiones = array(
+          array(
+              'name' => 'ImpresionRSV',
+              'page_from' => __CLASS__,
+              'page_to' => 'ventas_factura',
+              'type' => 'pdf',
+              'text' => '<span class="glyphicon glyphicon-print"></span>&nbsp; Factura detallada RSV',
+              'params' => ''
+          ),
+          array(
+              'name' => 'email_ImpresionRSV',
+              'page_from' => __CLASS__,
+              'page_to' => 'ventas_factura',
+              'type' => 'email',
+              'text' => ucfirst(FS_FACTURA) . ' detallada RSV',
+              'params' => '&factura=TRUE&tipo=detallada'
+          )
+      );
+      foreach ($extensiones as $ext) {
+         $fsext = new fs_extension($ext);
+         if (!$fsext->save()) {
+            $this->new_error_msg('Error al guardar la extensión ' . $ext['name']);
+         }
+      }
+   }
+   
+      // Corregir el Bug de fpdf con el Simbolo del Euro ---> €
    public function ckeckEuro($cadena) {
       $mostrar = $this->show_precio($cadena, $this->factura->coddivisa);
       $pos = strpos($mostrar, '€');
@@ -131,7 +169,7 @@ class factura_detallada extends fs_controller {
       // Definimos el color de relleno (gris, rojo, verde, azul)
       /// cargamos la configuración
       $fsvar = new fs_var();
-      $color = $fsvar->simple_get("f_detallada_color");
+      $color = $fsvar->simple_get("ImpresionRSV_color");
       if ($color) {
       	$pdf_doc->SetColorRelleno($color);
         $pdf_doc->color_rellono = $color;
@@ -350,34 +388,6 @@ class factura_detallada extends fs_controller {
          $pdf_doc->Output();
       }
    }
-
-   private function share_extensions() {
-      $extensiones = array(
-          array(
-              'name' => 'factura_detallada2',
-              'page_from' => __CLASS__,
-              'page_to' => 'ventas_factura',
-              'type' => 'pdf',
-              'text' => '<span class="glyphicon glyphicon-print"></span>&nbsp; Factura detallada 2',
-              'params' => ''
-          ),
-          array(
-              'name' => 'email_factura_detallada2',
-              'page_from' => __CLASS__,
-              'page_to' => 'ventas_factura',
-              'type' => 'email',
-              'text' => ucfirst(FS_FACTURA) . ' detallada',
-              'params' => '&factura=TRUE&tipo=detallada'
-          )
-      );
-      foreach ($extensiones as $ext) {
-         $fsext = new fs_extension($ext);
-         if (!$fsext->save()) {
-            $this->new_error_msg('Error al guardar la extensión ' . $ext['name']);
-         }
-      }
-   }
-
    private function fix_html($txt) {
       $newt = str_replace('&lt;', '<', $txt);
       $newt = str_replace('&gt;', '>', $newt);
@@ -512,4 +522,6 @@ class factura_detallada extends fs_controller {
       
       return $texto_pago;
    }
+
+   
 }

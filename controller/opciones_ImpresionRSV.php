@@ -25,14 +25,14 @@
  *
  * @author César
  */
-class opciones_factura_detallada extends fs_controller
+class opciones_ImpresionRSV extends fs_controller
 {
-   public $factura_detallada_setup;
+   public $ImpresionRSV_setup;
    public $colores;
    
    public function __construct()
    {
-      parent::__construct(__CLASS__, 'Factura Detallada', 'admin', FALSE, FALSE);
+      parent::__construct(__CLASS__, 'ImpresionRSV', 'admin', FALSE, FALSE);
    }
    
    protected function private_core()
@@ -44,18 +44,18 @@ class opciones_factura_detallada extends fs_controller
       
       /// cargamos la configuración
       $fsvar = new fs_var();
-      $this->factura_detallada_setup = $fsvar->array_get(
+      $this->ImpresionRSV_setup = $fsvar->array_get(
          array(
-            'f_detallada_color' => 'azul'
+            'ImpresionRSV_color' => 'azul'
          ),
          FALSE
       );
       
-      if( isset($_POST['factura_detallada_setup']) )
+      if( isset($_POST['ImpresionRSV_setup']) )
       {
-         $this->factura_detallada_setup['f_detallada_color'] = $_POST['color'];
+         $this->ImpresionRSV_setup['ImpresionRSV_color'] = $_POST['color'];
          
-         if( $fsvar->array_save($this->factura_detallada_setup) )
+         if( $fsvar->array_save($this->ImpresionRSV_setup) )
          {
             $this->new_message('Datos guardados correctamente.');
          }
@@ -67,11 +67,11 @@ class opciones_factura_detallada extends fs_controller
    private function share_extension()
    {
       $fsext = new fs_extension();
-      $fsext->name = 'opciones_fac_detallada';
+      $fsext->name = 'opciones_ImpresionRSV';
       $fsext->from = __CLASS__;
       $fsext->to = 'admin_empresa';
       $fsext->type = 'button';
-      $fsext->text = '<span class="glyphicon glyphicon-print" aria-hidden="true"></span> &nbsp; Factura Detallada';
+      $fsext->text = '<span class="glyphicon glyphicon-print" aria-hidden="true"></span> &nbsp; Factura Detallada RSV';
       $fsext->save();
    }
    
