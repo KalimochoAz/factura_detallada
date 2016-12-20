@@ -20,8 +20,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-require_once 'plugins/factura_detallada/fpdf17/fs_fpdf.php';
-define('FPDF_FONTPATH', 'plugins/factura_detallada/fpdf17/font/');
+require_once 'plugins/ImpresionRSV/fpdf17/fs_fpdf.php';
+define('FPDF_FONTPATH', 'plugins/ImpresionRSV/fpdf17/font/');
 
 require_model('cliente.php');
 require_model('factura_cliente.php');

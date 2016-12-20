@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'plugins/factura_detallada/fpdf17/fpdf.php';
-require_once 'plugins/factura_detallada/qrcode/qrcode.class.php';
+require_once 'plugins/ImpresionRSV/fpdf17/fpdf.php';
+require_once 'plugins/ImpresionRSV/qrcode/qrcode.class.php';
 
 class PDF_MC_Table extends FPDF {
 
@@ -238,7 +238,7 @@ class PDF_MC_Table extends FPDF {
 
       $this->SetDrawColor(210, 210, 210);
       $this->SetTextColor(0);
-      for ($i = 0; $i < count($this->datoscab); $i++) {
+      for ($i = 0; $i < count($this->datoscab)-1; $i++) {
          $numero_filas = $this->numero_lineas;
          $this->RoundedRect($aquiX, $aquiY, $this->widths[$i], $numero_filas * 5, 1, 'D');
          $aquiX += $this->widths[$i];
